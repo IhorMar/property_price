@@ -26,7 +26,6 @@ class Command(BaseCommand):
 
         with closing(requests.get(url, stream=True)) as r:
             f = (line.decode('utf-8') for line in r.iter_lines())
-            # reader = csv.reader(f, delimiter=',', quotechar='"')
             rows = list(islice(f, 100))
             for element in rows:
                 price_data = Price()

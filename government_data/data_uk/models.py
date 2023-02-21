@@ -1,7 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
 
 class Price(models.Model):
     transaction_identifier = models.CharField(max_length=200, blank=True)
@@ -27,19 +25,3 @@ class Price(models.Model):
 
     def __str__(self):
         return self.transaction_identifier
-    # Transaction unique identifier
-    # Price
-    # Date of Transfer
-    # Postcode
-    # Property Type
-    # Old / New
-    # Duration
-    # PAON
-    # SAON
-    # Street
-    # Locality
-    # Town / City
-    # District
-    # County
-    # PPD Category Type
-    # Record Status - monthly file only
