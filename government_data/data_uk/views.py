@@ -7,7 +7,6 @@ from data_uk.models import Price
 from .serializer import PriceSerializer
 
 
-
 @api_view(['GET'])
 def getPrice(request):
     price = Price.objects.all()
