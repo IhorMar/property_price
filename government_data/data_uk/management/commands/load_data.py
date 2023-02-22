@@ -18,6 +18,34 @@ record_status = {'A': 'Addition',
                  'C': 'Change',
                  'D': 'Delete'}
 
+fields_in_model = [
+    'transaction_identifier', 'price', 'date_of_transfer', 'postcode', 'property_type', 'old_or_new', 'duration',
+    'primary_addressable_object_name', 'secondary_addressable_object_name', 'property_street', 'property_locality',
+    'property_city', 'property_district', 'property_country', 'type_price_paid_transaction', 'record_status']
+
+
+def update_model(model, save_update=True, **kwargs):
+    for attr, val in kwargs.items():
+        if val in property_type:
+            val = property_type[val]
+            setattr(model, attr, val)
+        if val in old_new_status:
+            val = old_new_status[val]
+            setattr(model, attr, val)
+        if val in duration_type:
+            val = duration_type[val]
+            setattr(model, attr, val)
+        if val in category_type:
+            val = category_type[val]
+            setattr(model, attr, val)
+        if val in record_status:
+            val = record_status[val]
+            setattr(model, attr, val)
+        else:
+            setattr(model, attr, val)
+    if save_update:
+        model.save()
+
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -28,33 +56,8 @@ class Command(BaseCommand):
             f = (line.decode('utf-8') for line in r.iter_lines())
             rows = list(islice(f, 100))
             for element in rows:
+                element = element.replace('"', "")
+                element = list(element.split(','))
+                res = dict(zip(fields_in_model, element))
                 price_data = Price()
-                element = element.split(',')
-                for _ in element:
-                    price_data.transaction_identifier = element[0].strip('\"')
-                    price_data.price = element[1].strip('\"')
-                    price_data.date_of_transfer = element[2].strip('\"')
-                    price_data.postcode = element[3].strip('\"')
-
-                    if element[4].strip('\"') in property_type:
-                        price_data.property_type = property_type[element[4].strip('\"')]
-                    if element[5].strip('\"') in old_new_status:
-                        price_data.old_or_new = old_new_status[element[5].strip('\"')]
-                    if element[6].strip('\"') in duration_type:
-                        price_data.duration = duration_type[element[6].strip('\"')]
-
-                    price_data.primary_addressable_object_name = element[7].strip('\"')
-                    price_data.secondary_addressable_object_name = element[8].strip('\"')
-                    price_data.property_street = element[9].strip('\"')
-                    price_data.property_locality = element[10].strip('\"')
-                    price_data.property_city = element[11].strip('\"')
-                    price_data.property_district = element[12].strip('\"')
-                    price_data.property_country = element[13].strip('\"')
-
-                    if element[14].strip('\"') in category_type:
-                        price_data.type_price_paid_transaction = category_type[element[14].strip('\"')]
-
-                    if element[15].strip('\"') in record_status:
-                        price_data.record_status = record_status[element[15].strip('\"')]
-
-                    price_data.save()
+                update_model(price_data, save_update=True, **res)
