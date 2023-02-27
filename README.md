@@ -1,10 +1,10 @@
 # Government_test
 
-Step 1
+### **Step 1**
 
 Download repo
 
-Step 2
+### **Step 2**
 
 pip install -r requirements.txt
 
